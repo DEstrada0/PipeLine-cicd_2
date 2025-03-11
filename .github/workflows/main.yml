@@ -18,20 +18,33 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Maven
-        run: mvn clean package  # Generates target/app.jar
-
-      - name: Rename JAR for Docker
-        run: mv target/*.jar app.jar  # Move app.jar to root
+        run: mvn clean package  # Generates target/*.jar
 
       - name: Upload JAR as Artifact
         uses: actions/upload-artifact@v3
         with:
           name: built-jar
-          path: app.jar  # Corrected path
+          path: target/*.jar
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Run tests with Maven
+        run: mvn test
 
   docker:
-    needs: [build, test]
     runs-on: ubuntu-latest
+    needs: [build, test]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -42,10 +55,16 @@ jobs:
           name: built-jar
           path: .
 
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build, tag, and push Docker image
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          IMAGE_NAME: java-app
+          IMAGE_NAME: my-java-app
         run: |
           docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME .
           docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:latest
