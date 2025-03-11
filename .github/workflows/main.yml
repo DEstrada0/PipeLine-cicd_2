@@ -22,7 +22,7 @@ jobs:
         run: mvn clean package  # This generates target/*.jar
 
       - name: Upload JAR as Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: built-jar
           path: target/*.jar
@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Download JAR from Build Job
-        uses: actions/download-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: built-jar
           path: target  # Ensures the JAR is available for Docker
