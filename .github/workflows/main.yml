@@ -19,10 +19,17 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Maven
-        run: mvn clean package
+        run: mvn clean package  # This generates target/*.jar
+
+      - name: Upload JAR as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: built-jar
+          path: target/*.jar
 
   test:
     runs-on: ubuntu-latest
+    needs: build  # Ensure tests run only after build succeeds
 
     steps:
       - name: Checkout code
@@ -38,12 +45,18 @@ jobs:
         run: mvn test
 
   docker:
-    needs: [build, test]
+    needs: [build, test]  # Ensures build & test succeed before deploying
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Download JAR from Build Job
+        uses: actions/download-artifact@v3
+        with:
+          name: built-jar
+          path: target  # Ensures the JAR is available for Docker
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
