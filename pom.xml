@@ -44,7 +44,7 @@
             <configuration>
                 <archive>
                     <manifest>
-                        <mainClass>com.example.app</mainClass> <!-- Update to match your package -->
+                        <mainClass>com.example.App</mainClass> <!-- Update to match your package -->
                     </manifest>
                 </archive>
             </configuration>
