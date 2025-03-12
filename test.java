@@ -26,6 +26,6 @@ public class test {
     public void testAppIsWorking() {
         Response response = RestAssured.get("http://localhost:8080/");
         assertEquals(200, response.getStatusCode());  // Check if response is 200 OK
-        assertEquals("Hello World!", response.getBody().asString());  // Check response body
+        assertEquals("Hola", response.getBody().asString());  // Check response body
     }
 }
