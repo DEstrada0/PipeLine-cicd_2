@@ -7,6 +7,6 @@ public class App {
 
     // Simple method to test
     public static String getGreeting() {
-        return "Hello from World";
+        return "Hello from World!";
     }
 }
