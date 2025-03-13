@@ -18,16 +18,14 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Maven
-        run: mvn clean package  # Generates target/*.jar
-
-      - name: Rename JAR for Docker
-        run: mv target/*.jar app.jar  # Moves and renames the built JAR to app.jar
+        run: mvn clean package  # Generates target/app.jar because of <finalName>app</finalName> in pom.xml
 
       - name: Upload JAR as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: built-jar
-          path: app.jar
+          path: target/app.jar
+
 
 
   test:
